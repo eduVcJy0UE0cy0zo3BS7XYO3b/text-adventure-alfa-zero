@@ -88,3 +88,50 @@ body {
 .audio-btn:hover {
     background-color: #4a4a4a;
 }
+
+/* Стили для блока описания предметов */
+.item-description {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #333;
+    border-radius: 4px;
+    border-left: 3px solid #ffcc00;
+    min-height: 30px;
+    font-style: italic;
+    color: #cccccc;
+}
+
+/* Индикатор активного предмета */
+.inventory-item.active {
+    background-color: #555;
+    border: 1px solid #ffcc00;
+    box-shadow: 0 0 5px #ffcc00;
+}
+
+/* Изменение курсора при активном предмете */
+body.item-active {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23ffcc00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>'), auto;
+}
+
+/* Дополнительные стили для лучшего отображения предметов инвентаря */
+.inventory-item {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 10px;
+    background-color: #444;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.inventory-item:hover {
+    background-color: #555;
+    transform: translateY(-2px);
+}
+
+/* Стиль для инвентаря, чтобы предметы отображались лучше */
+#inventory-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}

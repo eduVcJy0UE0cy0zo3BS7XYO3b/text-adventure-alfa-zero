@@ -15,7 +15,13 @@ class TextGame {
         this.storyTextElement = document.getElementById('story-text');
         this.choicesElement = document.getElementById('choices');
         this.inventoryElement = document.getElementById('inventory-items');
-        
+
+        // Добавляем элемент для описания предметов
+	this.itemDescriptionElement = document.createElement('div');
+	this.itemDescriptionElement.id = 'item-description';
+	this.itemDescriptionElement.className = 'item-description';
+	document.getElementById('inventory').appendChild(this.itemDescriptionElement);
+	
         // Аудио элементы
 	this.initAudio();
 	
@@ -58,15 +64,15 @@ class TextGame {
     // Метод для инициализации звуков
     initAudio() {
 	try {
-            this.bgMusic = new Audio('https://freepd.com/music/Puzzle%20Game.mp3');
+            this.bgMusic = new Audio('/resources/Adventure.mp3');
             this.bgMusic.loop = true;
             this.bgMusic.volume = 0.5;
             
             this.sfx = {
-		itemPickup: new Audio('https://freesound.org/data/previews/366/366113_6657512-lq.mp3'),
-		itemUse: new Audio('https://freesound.org/data/previews/561/561252_12105261-lq.mp3'),
-		doorOpen: new Audio('https://freesound.org/data/previews/353/353546_5477873-lq.mp3'),
-		danger: new Audio('https://freesound.org/data/previews/368/368691_6687862-lq.mp3')
+		itemPickup: new Audio('/resources/item-pickup-v1.wav'),
+		itemUse: new Audio('/resources/item-pickup-v1.wav'),
+		doorOpen: new Audio('/resources/item-pickup-v1.wav'),
+		danger: new Audio('/resources/item-pickup-v1.wav')
             };
 	} catch (error) {
             console.error('Ошибка при загрузке аудио:', error);
@@ -80,12 +86,170 @@ class TextGame {
             this.bgMusic = { play: () => {}, pause: () => {} };
 	}
     }
+    // Новый метод для осмотра предмета
+    examineItem(item) {
+	// Словарь с описаниями предметов (можно вынести его в отдельный модуль или файл)
+	const itemDescriptions = {
+            'Факел': 'Старый потрёпанный факел. Ещё горит и даёт достаточно света для тёмных помещений.',
+            'Старинный ключ': 'Массивный бронзовый ключ с витиеватым узором. Выглядит древним.',
+            'Защитный амулет': 'Амулет с руническими символами. От него исходит слабое свечение.',
+            'Старинный нож': 'Небольшой нож с изящной рукоятью. Лезвие всё ещё острое.',
+            'Золотая монета': 'Блестящая золотая монета с изображением бывшего правителя замка.',
+            'Ржавый меч': 'Старый меч, покрытый ржавчиной. Не подходит для боя, но может пригодиться.',
+            'Древний артефакт': 'Странный артефакт неизвестного назначения. На нём высечены загадочные символы.',
+            'Королевская корона': 'Великолепная корона, украшенная драгоценными камнями.',
+            'Сундук с сокровищами': 'Тяжёлый сундук, заполненный разнообразными сокровищами.'
+	};
+	
+	// Воспроизводим звук осмотра
+	this.playSfx('itemUse');
+	
+	// Показываем описание
+	const description = itemDescriptions[item] || 'Вы внимательно осматриваете предмет, но не можете понять его назначение';
+	
+	// Создаём модальное окно с описанием
+	const modal = document.createElement('div');
+	modal.className = 'item-modal';
+	modal.innerHTML = `
+        <div class="item-modal-content">
+            <h3>Осмотр: ${item}</h3>
+            <p>${description}</p>
+            <button class="item-modal-close">Закрыть</button>
+        </div>
+    `;
+	
+	document.body.appendChild(modal);
+	
+	// Обработчик закрытия
+	modal.querySelector('.item-modal-close').addEventListener('click', () => {
+            document.body.removeChild(modal);
+	});
+	
+	// Закрытие по клику вне модального окна
+	modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+		document.body.removeChild(modal);
+            }
+	});
+    }
     
     // Инициализация игры
     initGame() {
         this.bgMusic.play().catch(e => console.log('Автовоспроизведение заблокировано: нажмите на страницу'));
+
+	// Добавляем обработчик клика для отмены выбора предмета
+	document.addEventListener('click', (e) => {
+            // Если клик не по предмету инвентаря и не по интерактивному элементу,
+            // то снимаем выбор с активного предмета
+            if (!e.target.closest('.inventory-item') && 
+		!e.target.classList.contains('interactive') &&
+		this.activeItem !== null) {
+		this.activeItem = null;
+		this.itemDescriptionElement.textContent = '';
+		this.renderInventory();
+            }
+	});
+	
         this.loadScene(this.currentScene);
     }
+    
+    // Улучшенная обработка интерактивных элементов
+    handleInteraction(element) {
+	const action = element.getAttribute('data-action');
+	const requires = element.getAttribute('data-requires');
+	const gives = element.getAttribute('data-gives');
+	const nextScene = element.getAttribute('data-scene');
+	
+	if (action === 'examine') {
+            this.playSfx('itemUse');
+            // Улучшенное сообщение об осмотре
+            const examineText = `Вы внимательно осматриваете ${element.textContent}. `;
+            
+            // Дополнительные описания в зависимости от объекта
+            const examineDetails = {
+		'старинный канделябр': 'Массивный канделябр из потемневшего серебра. Похоже, его давно не зажигали.',
+		'старинная книга': 'Книга написана на древнем языке. Вы различаете упоминания о тайных комнатах замка и о сокровище.',
+		'каменный алтарь': 'Алтарь украшен странными символами. В центре имеется круглое углубление, похожее на место для монеты.',
+		'древний сундук': 'Сундук покрыт магическими печатями и кажется непроницаемым.'
+            };
+            
+            // Получаем текст элемента и ищем его в словаре описаний
+            const elementText = element.textContent.toLowerCase();
+            let detailedDescription = '';
+            
+            for (const [key, value] of Object.entries(examineDetails)) {
+		if (elementText.includes(key)) {
+                    detailedDescription = value;
+                    break;
+		}
+            }
+            
+            // Если не нашли детального описания
+            if (!detailedDescription) {
+		detailedDescription = 'Ничего особенного вы не замечаете.';
+            }
+            
+            alert(examineText + detailedDescription);
+	} else if (action === 'pickup') {
+            if (gives && !this.inventory.includes(gives)) {
+		// Проверяем, требуется ли предмет для подбора
+		if (requires && !this.inventory.includes(requires)) {
+                    alert(`Для этого вам требуется ${requires}.`);
+                    return;
+		}
+		
+		this.addToInventory(gives);
+		this.playSfx('itemPickup');
+		element.style.color = 'gray';
+		element.style.textDecoration = 'none';
+		element.style.cursor = 'default';
+		element.classList.remove('interactive');
+            }
+	} else if (action === 'use') {
+            if (requires) {
+		if (this.activeItem === requires) {
+                    this.playSfx('itemUse');
+                    // Сбрасываем активный предмет после использования
+                    this.activeItem = null;
+                    this.itemDescriptionElement.textContent = '';
+                    this.renderInventory();
+                    
+                    if (nextScene) {
+			this.loadScene(nextScene);
+                    } else {
+			// Если не указана новая сцена, просто показываем сообщение об использовании
+			alert(`Вы успешно использовали ${requires} на ${element.textContent}.`);
+                    }
+		} else {
+                    alert('Вам нужен правильный предмет для этого.');
+		}
+            }
+	} else if (action === 'door') {
+            if (requires && !this.inventory.includes(requires)) {
+		this.playSfx('danger');
+		alert(`Эта дверь заперта. Вам нужен ${requires}.`);
+            } else if (requires && this.activeItem === requires) {
+		// Если дверь требует ключ и он активен, открываем дверь
+		this.playSfx('doorOpen');
+		
+		// Сбрасываем активный предмет после использования
+		this.activeItem = null;
+		this.itemDescriptionElement.textContent = '';
+		this.renderInventory();
+		
+		if (nextScene) {
+                    this.loadScene(nextScene);
+		}
+            } else if (requires && this.inventory.includes(requires) && this.activeItem !== requires) {
+		// Если ключ есть в инвентаре, но не выбран
+		alert(`Эта дверь заперта. Вам нужно выбрать ${requires} из инвентаря.`);
+            } else if (nextScene) {
+		this.playSfx('doorOpen');
+		this.loadScene(nextScene);
+            }
+	}
+    }
+    
     
     // Загрузка сцены с обработкой условных выборов
     loadScene(sceneId) {
@@ -270,35 +434,139 @@ class TextGame {
         }
     }
     
-    // Отображение инвентаря
+    // Перепишем метод renderInventory для добавления осмотра предметов
     renderInventory() {
-        this.inventoryElement.innerHTML = '';
-        
-        if (this.inventory.length === 0) {
+	this.inventoryElement.innerHTML = '';
+	
+	if (this.inventory.length === 0) {
             this.inventoryElement.textContent = 'Пусто';
+            this.itemDescriptionElement.textContent = '';
             return;
-        }
-        
-        this.inventory.forEach(item => {
+	}
+	
+	// Словарь с описаниями предметов (можно вынести в отдельный файл)
+	const itemDescriptions = {
+            'Факел': 'Старый потрёпанный факел. Ещё горит и даёт достаточно света для тёмных помещений.',
+            'Старинный ключ': 'Массивный бронзовый ключ с витиеватым узором. Выглядит древним.',
+            'Защитный амулет': 'Амулет с руническими символами. От него исходит слабое свечение.',
+            'Старинный нож': 'Небольшой нож с изящной рукоятью. Лезвие всё ещё острое.',
+            'Золотая монета': 'Блестящая золотая монета с изображением бывшего правителя замка.',
+            'Ржавый меч': 'Старый меч, покрытый ржавчиной. Не подходит для боя, но может пригодиться.',
+            'Древний артефакт': 'Странный артефакт неизвестного назначения. На нём высечены загадочные символы.',
+            'Королевская корона': 'Великолепная корона, украшенная драгоценными камнями.',
+            'Сундук с сокровищами': 'Тяжёлый сундук, заполненный разнообразными сокровищами.'
+	};
+	
+	// Словарь с комбинациями предметов (первый применяется ко второму)
+	this.itemCombinations = {
+            'Факел:Ржавый меч': {
+		result: 'Вы нагрели ржавый меч на огне. Некоторая ржавчина отвалилась, но меч всё ещё выглядит не очень.',
+		gives: null,
+		removes: null
+            },
+            'Старинный нож:Старинный ключ': {
+		result: 'Вы почистили ключ от грязи с помощью ножа. Теперь он блестит.',
+		gives: null,
+		removes: null
+            },
+            'Золотая монета:Защитный амулет': {
+		result: 'Вы приложили монету к амулету, и оба предмета начали слабо светиться.',
+		gives: 'Светящийся амулет',
+		removes: ['Золотая монета', 'Защитный амулет']
+            }
+            // Можно добавить больше комбинаций
+	};
+	
+	this.inventory.forEach(item => {
             const itemElement = document.createElement('div');
             itemElement.className = 'inventory-item';
             if (this.activeItem === item) {
-                itemElement.classList.add('active');
+		itemElement.classList.add('active');
             }
             itemElement.textContent = item;
             
-            itemElement.addEventListener('click', () => {
-                if (this.activeItem === item) {
-                    this.activeItem = null;
-                } else {
-                    this.activeItem = item;
-                    this.playSfx('itemUse');
-                }
-                this.renderInventory();
+            // Левый клик - выбор или применение предмета
+            itemElement.addEventListener('click', (e) => {
+		e.stopPropagation(); // Предотвращаем "всплытие" события
+		
+		// Если есть активный предмет и он не текущий - пробуем применить
+		if (this.activeItem && this.activeItem !== item) {
+                    this.combineItems(this.activeItem, item);
+		} 
+		// Иначе выбираем/отменяем выбор текущего предмета
+		else {
+                    if (this.activeItem === item) {
+			this.activeItem = null;
+			this.itemDescriptionElement.textContent = '';
+                    } else {
+			this.activeItem = item;
+			this.playSfx('itemUse');
+			
+			// Показываем описание предмета
+			const description = itemDescriptions[item] || 'Предмет неизвестного назначения';
+			this.itemDescriptionElement.textContent = description;
+                    }
+                    this.renderInventory();
+		}
+            });
+            
+            // Правый клик - только осмотр предмета
+            itemElement.addEventListener('contextmenu', (e) => {
+		e.preventDefault(); // Отменяем стандартное контекстное меню
+		e.stopPropagation();
+		
+		// Показываем описание предмета
+		const description = itemDescriptions[item] || 'Предмет неизвестного назначения';
+		this.itemDescriptionElement.textContent = description;
+		this.playSfx('itemUse');
             });
             
             this.inventoryElement.appendChild(itemElement);
-        });
+	});
+	
+	// Обновляем курсор при наличии активного предмета
+	if (this.activeItem) {
+            document.body.classList.add('item-active');
+	} else {
+            document.body.classList.remove('item-active');
+	}
+    }
+
+    // Новый метод для комбинирования предметов
+    combineItems(activeItem, targetItem) {
+	// Формируем ключ для поиска в словаре комбинаций
+	const combinationKey = `${activeItem}:${targetItem}`;
+	
+	// Проверяем, есть ли такая комбинация
+	const combination = this.itemCombinations[combinationKey];
+	
+	if (combination) {
+            this.playSfx('itemUse');
+            alert(combination.result);
+            
+            // Если комбинация дает новый предмет
+            if (combination.gives) {
+		this.addToInventory(combination.gives);
+            }
+            
+            // Если комбинация удаляет предметы
+            if (combination.removes) {
+		if (Array.isArray(combination.removes)) {
+                    combination.removes.forEach(item => this.removeFromInventory(item));
+		} else {
+                    this.removeFromInventory(combination.removes);
+		}
+            }
+            
+            // Сбрасываем активный предмет
+            this.activeItem = null;
+            this.itemDescriptionElement.textContent = '';
+            this.renderInventory();
+	} else {
+            // Если комбинация не найдена
+            this.playSfx('danger');
+            alert(`Вы не можете использовать ${activeItem} с ${targetItem}.`);
+	}
     }
     
     // Воспроизведение звукового эффекта
