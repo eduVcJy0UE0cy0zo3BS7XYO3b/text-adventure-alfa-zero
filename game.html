@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="style.css" />
     <title>Приключение в заброшенном замке</title>
   </head>
   <body>
@@ -19,12 +19,19 @@
         <div id="inventory-items"></div>
       </div>
       
-      <div id="audio-controls">
-        <button id="toggle-music" class="audio-btn">Музыка: Вкл</button>
-        <button id="toggle-sfx" class="audio-btn">Звуки: Вкл</button>
+      <div id="game-controls">
+        <div id="audio-controls">
+          <button id="toggle-music" class="audio-btn">Музыка: Вкл</button>
+          <button id="toggle-sfx" class="audio-btn">Звуки: Вкл</button>
+        </div>
+        
+        <div id="save-controls">
+          <button id="save-game" class="save-btn">Сохранить игру</button>
+          <button id="load-game" class="save-btn">Загрузить игру</button>
+        </div>
       </div>
     </div>
 
-    <script src="/script.js"></script>
+    <script type="module" src="src/index.js"></script>
   </body>
 </html>
