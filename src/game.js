@@ -17,24 +17,68 @@ class TextGame {
         this.inventoryElement = document.getElementById('inventory-items');
         
         // Аудио элементы
-        this.bgMusic = new Audio('https://freepd.com/music/Puzzle%20Game.mp3');
-        this.bgMusic.loop = true;
-        this.bgMusic.volume = 0.5;
-        
-        // Звуковые эффекты
-        this.sfx = {
-            itemPickup: new Audio('https://freesound.org/data/previews/366/366113_6657512-lq.mp3'),
-            itemUse: new Audio('https://freesound.org/data/previews/561/561252_12105261-lq.mp3'),
-            doorOpen: new Audio('https://freesound.org/data/previews/353/353546_5477873-lq.mp3'),
-            danger: new Audio('https://freesound.org/data/previews/368/368691_6687862-lq.mp3')
-        };
-        
+	this.initAudio();
+	
         // Обработчики кнопок аудио
         document.getElementById('toggle-music').addEventListener('click', () => this.toggleMusic());
         document.getElementById('toggle-sfx').addEventListener('click', () => this.toggleSfx());
-        
+
+	// Обработчики кнопок сохранения/загрузки
+	try {
+            const saveGameBtn = document.getElementById('save-game');
+            const loadGameBtn = document.getElementById('load-game');
+            
+            if (saveGameBtn && loadGameBtn) {
+		saveGameBtn.addEventListener('click', () => {
+                    if (typeof saveGame === 'function') {
+			saveGame(this);
+			alert('Игра сохранена!');
+                    }
+		});
+		
+		loadGameBtn.addEventListener('click', () => {
+                    if (typeof loadGame === 'function') {
+			const result = loadGame(this);
+			if (result) {
+                            alert('Игра загружена!');
+			} else {
+                            alert('Нет сохранений или произошла ошибка при загрузке.');
+			}
+                    }
+		});
+            }
+	} catch (error) {
+            console.error('Ошибка при инициализации кнопок сохранения/загрузки:', error);
+	}
+	
         // Инициализация игры
         this.initGame();
+    }
+
+    // Метод для инициализации звуков
+    initAudio() {
+	try {
+            this.bgMusic = new Audio('https://freepd.com/music/Puzzle%20Game.mp3');
+            this.bgMusic.loop = true;
+            this.bgMusic.volume = 0.5;
+            
+            this.sfx = {
+		itemPickup: new Audio('https://freesound.org/data/previews/366/366113_6657512-lq.mp3'),
+		itemUse: new Audio('https://freesound.org/data/previews/561/561252_12105261-lq.mp3'),
+		doorOpen: new Audio('https://freesound.org/data/previews/353/353546_5477873-lq.mp3'),
+		danger: new Audio('https://freesound.org/data/previews/368/368691_6687862-lq.mp3')
+            };
+	} catch (error) {
+            console.error('Ошибка при загрузке аудио:', error);
+            // Создаем пустые объекты вместо аудио
+            this.sfx = {
+		itemPickup: { play: () => {} },
+		itemUse: { play: () => {} },
+		doorOpen: { play: () => {} },
+		danger: { play: () => {} }
+            };
+            this.bgMusic = { play: () => {}, pause: () => {} };
+	}
     }
     
     // Инициализация игры
