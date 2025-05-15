@@ -1,0 +1,89 @@
+body {
+    font-family: 'Georgia', serif;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+#game-container {
+    background-color: #2a2a2a;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#story-text {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+#choices {
+    margin-bottom: 20px;
+}
+
+.choice {
+    display: inline-block;
+    margin: 5px;
+    padding: 8px 16px;
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.choice:hover {
+    background-color: #4a4a4a;
+}
+
+#inventory {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #333;
+    border-radius: 4px;
+}
+
+#inventory h3 {
+    margin-top: 0;
+}
+
+.inventory-item {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 10px;
+    background-color: #444;
+    border-radius: 4px;
+}
+
+.inventory-item.active {
+    background-color: #555;
+    border: 1px solid #888;
+}
+
+.interactive {
+    color: #ffcc00;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#audio-controls {
+    margin-top: 20px;
+}
+
+.audio-btn {
+    padding: 5px 10px;
+    margin-right: 10px;
+    background-color: #3a3a3a;
+    border: none;
+    color: #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.audio-btn:hover {
+    background-color: #4a4a4a;
+}
