@@ -1,0 +1,323 @@
+body {
+    font-family: 'Courier New', monospace;
+    background-color: #f0f5f9;
+    color: #0061a8;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    line-height: 1.6;
+    text-shadow: 0 0 1px rgba(0, 97, 168, 0.2);
+}
+
+#game-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 0;
+    box-shadow: 0 0 20px rgba(0, 97, 168, 0.1);
+    border: 1px solid #0061a8;
+}
+
+#story-text {
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    line-height: 1.4;
+    border-left: 3px solid #0061a8;
+    padding-left: 15px;
+    color: #333;
+}
+
+#choices {
+    margin-bottom: 20px;
+}
+
+.choice {
+    display: inline-block;
+    margin: 5px;
+    padding: 8px 16px;
+    background-color: #e9f0f6;
+    color: #0061a8;
+    border: 1px solid #0061a8;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Consolas', 'Monaco', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.choice:hover {
+    background-color: #0061a8;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 97, 168, 0.3);
+}
+
+#inventory {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f5f8fb;
+    border: 1px solid #0061a8;
+    border-radius: 0;
+}
+
+#inventory h3 {
+    margin-top: 0;
+    font-family: 'Consolas', 'Monaco', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #0061a8;
+    border-bottom: 1px solid #0061a8;
+    padding-bottom: 5px;
+}
+
+.inventory-item {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 10px;
+    background-color: #e9f0f6;
+    border: 1px dotted #0061a8;
+    border-radius: 0;
+    cursor: pointer;
+    font-family: 'Consolas', 'Monaco', monospace;
+    position: relative;
+    color: #0061a8;
+}
+
+.inventory-item.active {
+    background-color: #d0e5f5;
+    border: 1px solid #0061a8;
+    box-shadow: 0 0 10px rgba(0, 97, 168, 0.3);
+}
+
+.interactive {
+    color: #1a7cc1;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0 2px;
+    border-bottom: 1px dashed #1a7cc1;
+}
+
+.interactive:hover {
+    background-color: rgba(0, 97, 168, 0.1);
+}
+
+#audio-controls {
+    margin-top: 20px;
+}
+
+.audio-btn, .save-btn {
+    padding: 5px 10px;
+    margin-right: 10px;
+    background-color: #e9f0f6;
+    border: 1px solid #0061a8;
+    color: #0061a8;
+    border-radius: 0;
+    cursor: pointer;
+    font-family: 'Consolas', 'Monaco', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+}
+
+.audio-btn:hover, .save-btn:hover {
+    background-color: #0061a8;
+    color: #ffffff;
+}
+
+#game-controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #0061a8;
+    padding-top: 15px;
+}
+
+/* Стили для блока описания предметов */
+.item-description {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f5f8fb;
+    border-left: 3px solid #0061a8;
+    min-height: 30px;
+    font-style: italic;
+    color: #1a7cc1;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+/* Изменение курсора при активном предмете */
+body.item-active {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%230061a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>'), auto;
+}
+
+/* Дополнительные стили для лучшего отображения предметов инвентаря */
+.inventory-item {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 10px;
+    background-color: #e9f0f6;
+    border: 1px solid #0061a8;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.inventory-item:hover {
+    background-color: #d0e5f5;
+    transform: translateY(-2px);
+    box-shadow: 0 0 5px rgba(0, 97, 168, 0.3);
+}
+
+/* Стиль для инвентаря, чтобы предметы отображались лучше */
+#inventory-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+/* Стили для модального окна осмотра предметов */
+.item-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(240, 245, 249, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.item-modal-content {
+    background-color: #ffffff;
+    border: 2px solid #0061a8;
+    padding: 20px;
+    max-width: 500px;
+    width: 80%;
+    box-shadow: 0 0 20px rgba(0, 97, 168, 0.2);
+}
+
+.item-modal-content h3 {
+    color: #0061a8;
+    margin-top: 0;
+    border-bottom: 1px solid #0061a8;
+    padding-bottom: 10px;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.item-modal-content p {
+    color: #333;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.item-modal-close {
+    background-color: #e9f0f6;
+    color: #0061a8;
+    border: 1px solid #0061a8;
+    padding: 5px 15px;
+    cursor: pointer;
+    font-family: 'Consolas', 'Monaco', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    display: block;
+    margin-left: auto;
+    margin-top: 15px;
+}
+
+.item-modal-close:hover {
+    background-color: #0061a8;
+    color: #ffffff;
+}
+
+/* Заголовок в стиле ИТ-лаборатории */
+h1 {
+    color: #0061a8;
+    text-align: center;
+    font-family: 'Consolas', 'Monaco', monospace;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px rgba(0, 97, 168, 0.2);
+    border-bottom: 2px solid #0061a8;
+    padding-bottom: 10px;
+}
+
+/* Анимация мигающего курсора для терминального эффекта */
+#story-text::after {
+    content: '▌';
+    animation: blink 1s step-end infinite;
+    color: #0061a8;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Добавляем сетку для лабораторной атмосферы */
+#game-container {
+    position: relative;
+}
+
+#game-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 97, 168, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 97, 168, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Эффекты интерфейса лаборатории */
+.choice, .audio-btn, .save-btn {
+    box-shadow: inset 0 -2px 0 rgba(0, 97, 168, 0.2);
+}
+
+/* Добавляем декоративные элементы в стиле лабораторного интерфейса */
+#inventory::before {
+    content: "// СИСТЕМА ХРАНЕНИЯ";
+    position: absolute;
+    top: -18px;
+    right: 10px;
+    font-size: 10px;
+    color: #0061a8;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+#choices::before {
+    content: "// ВАРИАНТЫ ДЕЙСТВИЙ";
+    position: absolute;
+    margin-top: -18px;
+    font-size: 10px;
+    color: #0061a8;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+#story-text::before {
+    content: "// ПРОТОКОЛ ИССЛЕДОВАНИЯ";
+    position: absolute;
+    margin-top: -18px;
+    font-size: 10px;
+    color: #0061a8;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+/* Фон с технологическим узором */
+body {
+    background-image: radial-gradient(circle at 1px 1px, #0061a8 1px, transparent 0);
+    background-size: 20px 20px;
+    background-position: -10px -10px;
+}
