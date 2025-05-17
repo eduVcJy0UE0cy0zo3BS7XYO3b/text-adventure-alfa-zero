@@ -29,33 +29,6 @@ class TextGame {
         document.getElementById('toggle-music').addEventListener('click', () => this.toggleMusic());
         document.getElementById('toggle-sfx').addEventListener('click', () => this.toggleSfx());
 
-	// Обработчики кнопок сохранения/загрузки
-	try {
-            const saveGameBtn = document.getElementById('save-game');
-            const loadGameBtn = document.getElementById('load-game');
-            
-            if (saveGameBtn && loadGameBtn) {
-		saveGameBtn.addEventListener('click', () => {
-                    if (typeof saveGame === 'function') {
-			saveGame(this);
-			alert('Игра сохранена!');
-                    }
-		});
-		
-		loadGameBtn.addEventListener('click', () => {
-                    if (typeof loadGame === 'function') {
-			const result = loadGame(this);
-			if (result) {
-                            alert('Игра загружена!');
-			} else {
-                            alert('Нет сохранений или произошла ошибка при загрузке.');
-			}
-                    }
-		});
-            }
-	} catch (error) {
-            console.error('Ошибка при инициализации кнопок сохранения/загрузки:', error);
-	}
 	
         // Инициализация игры
         this.initGame();
