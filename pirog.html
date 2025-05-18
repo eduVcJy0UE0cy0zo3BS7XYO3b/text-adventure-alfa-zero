@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style2.css" />
+    <title>Загадка волшебного пирога</title>
+  </head>
+  <body>
+    <div id="game-container">
+      <h1>Загадка волшебного пирога</h1>
+      
+      <div id="story-text"></div>
+      
+      <div id="choices"></div>
+      
+      <div id="inventory">
+        <h3>Собранные улики:</h3>
+        <div id="inventory-items"></div>
+      </div>
+      
+      <div id="game-controls">
+        <div id="audio-controls">
+          <button id="toggle-music" class="audio-btn">Музыка: Вкл</button>
+          <button id="toggle-sfx" class="audio-btn">Звуки: Вкл</button>
+        </div>
+        <button id="debug-reset" class="save-btn" style="margin-left: auto;">Сбросить прогресс</button>
+      </div>
+    </div>
+
+    <script type="module" src="src/pirogGame.js"></script>
+  </body>
+</html>
